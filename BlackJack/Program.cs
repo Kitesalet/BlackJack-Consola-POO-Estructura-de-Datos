@@ -9,11 +9,7 @@ class Program
 
         blackjack.Jugar();
 
-        
-
-
-        Console.ReadKey();
-
+    
     }
 
 

@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlackJack.Models.Enums;
 
-namespace BlackJack.Models
+namespace BlackJack.Models.ElementosJuego
 {
     internal class Mazo
     {
@@ -15,8 +16,8 @@ namespace BlackJack.Models
         public Mazo()
         {
 
-           this.Cartas = GetCartaList();
-        
+            Cartas = GetCartaList();
+
         }
 
         private static List<Carta> GetCartaList()
@@ -25,13 +26,13 @@ namespace BlackJack.Models
             var list = new List<Carta>();
 
 
-            for(int i = 0; i < 56; i++)
+            for (int i = 0; i < 56; i++)
             {
 
 
                 Carta card = CrearCarta();
 
-                while(list.Any(e => e.Palo == card.Palo && e.Valor == card.Valor) == true)
+                while (list.Any(e => e.Palo == card.Palo && e.Valor == card.Valor) == true)
                 {
                     card = CrearCarta();
                 }
@@ -51,7 +52,7 @@ namespace BlackJack.Models
             Palo[] arrayPalos = new Palo[4];
             Valores[] arrayValores = new Valores[14];
 
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
 
                 arrayPalos[i] = (Palo)i;
@@ -69,8 +70,8 @@ namespace BlackJack.Models
             Random random = new Random();
 
 
-            return new Carta(arrayPalos[random.Next(0,4)], arrayValores[random.Next(0,14)]);
-            
+            return new Carta(arrayPalos[random.Next(0, 4)], arrayValores[random.Next(0, 14)]);
+
         }
 
     }

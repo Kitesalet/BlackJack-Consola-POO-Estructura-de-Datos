@@ -1,4 +1,4 @@
-﻿namespace BlackJack.Models
+﻿namespace BlackJack.Models.Enums
 {
     public enum Palo
     {

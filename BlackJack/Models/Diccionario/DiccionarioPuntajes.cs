@@ -4,8 +4,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using BlackJack.Models.ElementosJuego;
+using BlackJack.Models.Enums;
 
-namespace BlackJack.Models
+namespace BlackJack.Models.Diccionario
 {
     internal static class DiccionarioPuntajes
     {
@@ -35,11 +37,11 @@ namespace BlackJack.Models
                 {Valores.K, 10 },
                 {Valores.Q,10 },
                 {Valores.A,1 },
-                
-            
+
+
             };
 
-            foreach(Carta card in  cartas)
+            foreach (Carta card in cartas)
             {
 
                 acumulado += ValoresPuntos[card.Valor];

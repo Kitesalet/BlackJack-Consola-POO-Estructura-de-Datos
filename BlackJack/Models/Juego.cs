@@ -5,6 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using BlackJack.Models.Diccionario;
+using BlackJack.Models.ElementosJuego;
+using BlackJack.Models.Jugadores;
 
 namespace BlackJack.Models
 {
@@ -45,7 +48,6 @@ namespace BlackJack.Models
             return cartaMazo;
 
         }
-
 
         public void ComienzoJuego()
         {
@@ -125,6 +127,33 @@ namespace BlackJack.Models
                 }
             }
         }
+        public void DealerLoop()
+        {
+            Dealer.Puntos = DiccionarioPuntajes.ObtenerPuntaje(Dealer.Mano);
+
+            Console.WriteLine("Los puntos iniciales del dealer son {0}", Dealer.Puntos);
+
+            do
+            {
+                Dealer.Mano.Add(AsignarCarta(1));
+
+                Dealer.Puntos = DiccionarioPuntajes.ObtenerPuntaje(Dealer.Mano);
+
+                Console.WriteLine("");
+                Console.WriteLine($"La carta que saco el Dealer es {Dealer.Mano[Dealer.Mano.Count - 1].Valor} de {Dealer.Mano[Dealer.Mano.Count - 1].Palo}");
+                Console.WriteLine($"Los nuevos puntos del Dealer son {Dealer.Puntos}");
+                Console.WriteLine("");
+
+                if (Dealer.Puntos > Jugador.Puntos && Dealer.Puntos <= 21)
+                {
+
+                    Jugador.Perdio = true;
+
+                }
+
+
+            } while (Dealer.Puntos <= Jugador.Puntos && Dealer.Perdio == false || Jugador.Perdio == false);
+        }
         public void Jugar()
         {
             ComienzoJuego();
@@ -133,10 +162,25 @@ namespace BlackJack.Models
 
             HitLoop(opcion);
 
-            if(Jugador.Perdio == true)
+            if (Jugador.Perdio == true)
             {
-                Console.WriteLine($"Perdiste pelotudito, llegaste a los {Jugador.Puntos}");
+                Console.WriteLine($"Perdiste en el hit, llegaste a los {Jugador.Puntos} puntos...");
+            } else if (Jugador.Stand == true)
+            {
+                DealerLoop();
+
+                if (Jugador.Perdio == true)
+                {
+                    Console.WriteLine($"El Dealer te gano con {Dealer.Puntos} Puntos");
+                }
+                else
+                {
+                    Console.WriteLine($"Le ganaste al Dealer con {Jugador.Puntos}, el tenia {Dealer.Puntos}");
+                }
+
             }
+
+
 
         }
 

@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlackJack.Models.ElementosJuego;
 
-namespace BlackJack.Models
+namespace BlackJack.Models.Jugadores
 {
-    internal class Dealer : Persona
+    internal class Jugador : Persona
     {
-
-        public Dealer()
+        public bool Stand { get; set; } = false;
+        public Jugador()
         {
 
             Mano = new List<Carta>();
 
         }
+
+
 
     }
 }
