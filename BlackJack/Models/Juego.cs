@@ -13,7 +13,8 @@ namespace BlackJack.Models
 {
     internal class Juego
     {
-
+        private int ApuestaMinima { get; set; } = 100;
+        private int CurrentApuesta { get; set; }
         private Jugador Jugador { get; set; }
         private Dealer Dealer { get; set; }
         private Mazo Mazo { get; set; }
@@ -29,6 +30,7 @@ namespace BlackJack.Models
 
         }
 
+        
 
         private Carta AsignarCarta(int numero)
         {
@@ -58,30 +60,24 @@ namespace BlackJack.Models
             Console.WriteLine("");
             Console.WriteLine("");
 
-            this.Jugador.Mano.Add(AsignarCarta(1));
-            this.Jugador.Mano.Add(AsignarCarta(1));
+    
+            
+           
+        }
 
-
-            this.Dealer.Mano.Add(AsignarCarta(1));
-
-            Console.WriteLine($"Las primera carta del jugador es {Jugador.Mano[0].Valor} de {Jugador.Mano[0].Palo}");
-            Console.WriteLine($"Las segunda carta del jugador es {Jugador.Mano[1].Valor} de {Jugador.Mano[1].Palo}");
-
+        public void OpcionesJuego()
+        {         
+            Console.WriteLine("Su cantidad de dinero es de: {0}", this.Jugador.Dinero);
             Console.WriteLine("");
-
-            Console.WriteLine($"La carta del dealer es {Dealer.Mano[0].Valor} de {Dealer.Mano[0].Palo}");
-
-            Console.WriteLine("");
-
-            Console.WriteLine("Presionar 1 ||Hit|| ------- Presionar 2 ||Stay||");
-            Console.WriteLine();
+            Console.WriteLine("Por favor, elija una opcion a continuacion:");
+            Console.WriteLine("1 - Retirarse");
+            Console.WriteLine("2 - Seguir Jugando");
         }
 
         public int VerificarOpcionValida()
         {
-
+            
             int opcion = int.Parse(Console.ReadLine());
-
             while (opcion != 1 && opcion != 2)
             {
                 Console.WriteLine("Por favor, seleccione una opcion valida");
@@ -99,11 +95,12 @@ namespace BlackJack.Models
             Console.WriteLine();
             Jugador.Puntos = DiccionarioPuntajes.ObtenerPuntaje(Jugador.Mano);
             Console.WriteLine("Tus puntos actuales son: {0}", Jugador.Puntos);
+            Console.WriteLine("");
         }
 
         public void HitLoop(int opcion)
         {
-            while (Jugador.Perdio == false || Jugador.Stand == true)
+            while(Jugador.Perdio == false || Jugador.Stand == true)
             {
                 if (opcion == 1)
                 {
@@ -113,6 +110,7 @@ namespace BlackJack.Models
                     if (Jugador.Puntos > 21)
                     {
                         Jugador.Perdio = true;
+
                     }
                     else
                     {
@@ -154,31 +152,128 @@ namespace BlackJack.Models
 
             } while (Dealer.Puntos <= Jugador.Puntos && Dealer.Perdio == false || Jugador.Perdio == false);
         }
+
+        public int ApuestaAhora()
+        {
+
+            int current = int.Parse(Console.ReadLine());
+
+            while(current > this.Jugador.Dinero || current < this.ApuestaMinima)
+            {
+                if(current > this.Jugador.Dinero)
+                {
+                    Console.WriteLine("El monto que usted ingreso es mayor al que tiene en su cuenta...");
+                    
+                }else if(current < this.ApuestaMinima)
+                {
+                    Console.WriteLine("El monto seleccionado debe ser mayor a la apuesta minima...");
+           
+                }
+                Console.WriteLine("Por favor, vuelva a ingresar otro monto...");
+                current = int.Parse(Console.ReadLine());
+            }
+
+            return current;
+        }
+
+        public void SeguirJugando(int opcion)
+        {
+
+
+                this.Jugador.SeguirJugando = true;
+                this.Jugador.Stand = false;
+
+                Console.WriteLine("Cuanto quiere apostar? Introduzca el monto:");
+
+                this.CurrentApuesta = ApuestaAhora();
+                Console.WriteLine("");
+                Console.WriteLine("Usted ha apostado {0}$!", this.CurrentApuesta);
+
+                this.Jugador.Mano.Add(AsignarCarta(1));
+                this.Jugador.Mano.Add(AsignarCarta(1));
+
+
+                this.Dealer.Mano.Add(AsignarCarta(1));
+
+                Console.WriteLine($"Las primera carta del jugador es {Jugador.Mano[0].Valor} de {Jugador.Mano[0].Palo}");
+                Console.WriteLine($"Las segunda carta del jugador es {Jugador.Mano[1].Valor} de {Jugador.Mano[1].Palo}");
+
+                Console.WriteLine("");
+
+                Console.WriteLine($"La carta del dealer es {Dealer.Mano[0].Valor} de {Dealer.Mano[0].Palo}");
+
+
+
+        }
         public void Jugar()
         {
             ComienzoJuego();
+            this.Jugador.SeguirJugando = true;
 
-            int opcion = VerificarOpcionValida();
-
-            HitLoop(opcion);
-
-            if (Jugador.Perdio == true)
+            while(this.Jugador.SeguirJugando == true && this.Jugador.Dinero >= this.ApuestaMinima)
             {
-                Console.WriteLine($"Perdiste en el hit, llegaste a los {Jugador.Puntos} puntos...");
-            } else if (Jugador.Stand == true)
-            {
-                DealerLoop();
-
-                if (Jugador.Perdio == true)
+                OpcionesJuego();
+                int opcion = VerificarOpcionValida();
+                
+                SeguirJugando(opcion);
+                Console.WriteLine(""); 
+                
+                if(this.Jugador.SeguirJugando == true)
                 {
-                    Console.WriteLine($"El Dealer te gano con {Dealer.Puntos} Puntos");
-                }
-                else
-                {
-                    Console.WriteLine($"Le ganaste al Dealer con {Jugador.Puntos}, el tenia {Dealer.Puntos}");
+
+
+                    int looperNumber = 0;
+                    if (looperNumber == 0)
+                    {
+                        Console.WriteLine("");
+
+                        Console.WriteLine("Presionar 1 ||Hit|| ------- Presionar 2 ||Stand||");
+                        Console.WriteLine();
+                        looperNumber = int.Parse(Console.ReadLine());
+                        HitLoop(looperNumber);
+                    }
+                    else
+                    {
+                        Jugador.Puntos = DiccionarioPuntajes.ObtenerPuntaje(Jugador.Mano);
+                        Jugador.Stand = true;
+                        if (Jugador.Perdio == true)
+                        {
+                            Console.WriteLine($"Perdiste en el hit, llegaste a los {Jugador.Puntos} puntos...");
+                            Console.WriteLine($"{this.CurrentApuesta} se le han sido descontados de su cuenta!");
+                            this.Jugador.Dinero = this.Jugador.Dinero - this.ApuestaMinima;
+                            Console.WriteLine("");
+
+                        }
+                        else if (Jugador.Stand == true)
+                        {
+                            DealerLoop();
+
+                            if (Jugador.Perdio == true)
+                            {
+                                Console.WriteLine($"El Dealer te gano con {Dealer.Puntos} Puntos || Vos tenias {Jugador.Puntos} puntos");
+                                Console.WriteLine($"{this.CurrentApuesta} se le han sido descontados de su cuenta!");
+                                this.Jugador.Dinero = this.Jugador.Dinero - this.ApuestaMinima;
+                                Console.WriteLine("");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Le ganaste al Dealer, el tenia {Dealer.Puntos} puntos y vos {Jugador.Puntos} puntos");
+                                Console.WriteLine($"{this.CurrentApuesta * 2} se le han sido añadidos a su cuenta!");
+                                this.Jugador.Dinero = this.Jugador.Dinero + (this.CurrentApuesta * 2);
+                                Console.WriteLine();
+                            }
+
+                        }
+
+                    }
                 }
 
+              
             }
+
+          
+         
+
 
 
 

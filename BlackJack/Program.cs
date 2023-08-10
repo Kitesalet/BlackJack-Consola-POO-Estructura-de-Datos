@@ -9,7 +9,7 @@ class Program
 
         blackjack.Jugar();
 
-    
+        Console.WriteLine("Juego terminado!");
     }
 
 
